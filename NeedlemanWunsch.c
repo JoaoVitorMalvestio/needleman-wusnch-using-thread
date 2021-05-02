@@ -15,12 +15,11 @@ int match = 1;
 int missmatch = -1;
 int gap = -2; 
 
-int main(){
-	
+int main(){	
 	FILE *arq;
 	char Linha[100];
 	char primeiraSequencia[100]; 
-    char segundaSequencia[100]; 
+	char segundaSequencia[100]; 
     
 	arq = fopen("teste.txt", "rt");
 	if (arq == NULL) {
@@ -93,14 +92,31 @@ void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){
 }
 
 
-void printMatriz(char primeiraSequencia[],char segundaSequencia []){
+void printMatriz(char primeiraSequencia[], char segundaSequencia []){
     int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
     int tamanhoSegundaSequencia = strlen(segundaSequencia);
     
+    printf("\t\t");
+    for (int i = 0; i < tamanhoSegundaSequencia; i++) {		    
+		printf("%c\t", segundaSequencia[i]);
+	}
+    
     for (int i = 0; i < tamanhoPrimeiraSequencia + 1; i++){
         printf("\n");
+        
+        if (i > 0) {
+        	printf("%c\t", primeiraSequencia[i - 1]);	
+		} else {
+			printf("\t");
+		}
+		
         for (int j = 0; j < tamanhoSegundaSequencia + 1; j++){
-            printf("%d\t",matriz[i][j]);
+        	if (matriz[i][j] < 0) {
+        		printf("%d\t",matriz[i][j]);	
+			} else {
+				printf(" %d\t",matriz[i][j]);
+			}
+            
         }
 
     }
