@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <conio.h>
+#include <pthread.h>
 #define MAIOR(a, b) (((a) > (b)) ? (a) : (b))
 
 
@@ -20,7 +21,7 @@ int main(){
 	FILE *arq;
 	char Linha[100];
 	char primeiraSequencia[100]; 
-    char segundaSequencia[100]; 
+    char segundaSequencia[100];
     
 	arq = fopen("teste.txt", "rt");
 	if (arq == NULL) {
@@ -70,30 +71,14 @@ void inicializacao(char primeiraSequencia[], char segundaSequencia[]){
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){
     int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
     int tamanhoSegundaSequencia = strlen(segundaSequencia);
-    
-    /* AATCG
-	   AACG
-	   
-	          A      A      C        G
-	 0       -2     -4      -6      -8
-A	-2       1      -1      -3      -5
-A	-4      -1      2       0       -2
-T	-6      -3      0       1       1
-C	-8      -5     -2      -1       0
-G	-10     -7     -4      -3      -2
-	
-	*/
+
     
     for (int i = 1; i < tamanhoPrimeiraSequencia + 1; i++) {
         for (int j = 1; j < tamanhoSegundaSequencia + 1; j++){
         
             int valorDiagonal = 0;
-            
-            printf("primeiraSequencia[%d]: %c \n", i, primeiraSequencia[j-1]);
-            printf("segundaSequencia[%d]: %c \n", j, segundaSequencia[i-1]);
-			printf("Matriz: %d \n", matriz[i - 1][j - 1]);
 			
-            if (primeiraSequencia[j-1] == segundaSequencia[i-1]) {
+            if (primeiraSequencia[i-1] == segundaSequencia[j-1]) {
 			    valorDiagonal = matriz[i - 1][j - 1] + match;
             }else{
 			    valorDiagonal = matriz[i - 1][j - 1] + missmatch;
@@ -101,15 +86,7 @@ G	-10     -7     -4      -3      -2
     
             int valorEsquerda = matriz[i][j - 1] + gap;
             int valorCima =  matriz[i - 1][j] + gap;
-            
-            printf("Valor Diagonal: %d \n", valorDiagonal);
-            printf("Valor Esquerda: %d \n", valorEsquerda);
-            printf("Valor Cima: %d \n", valorCima);
-            
-
             int maximoScore = MAIOR(MAIOR(valorDiagonal, valorEsquerda), valorCima);
-            
-            printf("Maior: %d \n\n", maximoScore);
             
             matriz[i][j] = maximoScore;
         }
