@@ -1,1 +1,0 @@
-# needleman-wusnch-using-thread
