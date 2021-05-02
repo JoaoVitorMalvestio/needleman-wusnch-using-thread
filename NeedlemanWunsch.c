@@ -4,17 +4,16 @@
 #include <string.h>
 #include <conio.h>
 #include <pthread.h>
-#define MAIOR(a, b) (((a) > (b)) ? (a) : (b))
-
 
 void inicializacao(char primeiraSequencia[], char segundaSequencia[]);
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia[]);
 void printMatriz(char primeiraSequencia[], char segundaSequencia[]);
+int MAIOR(int a, int b);
 
 int matriz[100][100];
 int match = 1;
 int missmatch = -1;
-int gap = -2; 
+int gap = -1; 
 
 int main(){
 	
@@ -91,6 +90,14 @@ void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){
             matriz[i][j] = maximoScore;
         }
     }
+}
+
+int MAIOR (int a, int b) {
+	if (a > b) {
+		return a;
+	}
+	
+	return b;
 }
 
 void printMatriz(char primeiraSequencia[], char segundaSequencia []){
