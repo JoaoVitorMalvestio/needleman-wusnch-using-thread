@@ -1,5 +1,5 @@
 // Marcos Vinicius Pers RA: 94594
-// JAO
+// João Vitor Malvestio da Silva RA: 93089
 #include <stdio.h>
 #include <string.h>
 #include <conio.h>
@@ -29,10 +29,12 @@ int main(){
 	}
 	
 	while (!feof(arq)){
-	  if(strlen(primeiraSequencia) == 0 ){
+	  if(strlen(primeiraSequencia) == 0){
   		fgets(primeiraSequencia, 100, arq);
+  		primeiraSequencia[strcspn(primeiraSequencia, "\n")] = 0;
 	  }else{
 	  	fgets(segundaSequencia, 100, arq);
+	  	segundaSequencia[strcspn(segundaSequencia, "\n")] = 0;
 	  }
 	}
 	
@@ -42,14 +44,14 @@ int main(){
     
     printf("Segunda Sequencia: %s \n", segundaSequencia);
     	
-    inicializacao(primeiraSequencia,segundaSequencia);
-    matrizDeScore(primeiraSequencia,segundaSequencia);
-    printMatriz(primeiraSequencia,segundaSequencia);
+    inicializacao(primeiraSequencia, segundaSequencia);
+    matrizDeScore(primeiraSequencia, segundaSequencia);
+    printMatriz(primeiraSequencia, segundaSequencia);
     
 	return 0;
 }
 
-void inicializacao(char primeiraSequencia[],char segundaSequencia []){
+void inicializacao(char primeiraSequencia[], char segundaSequencia[]){
     int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
     int tamanhoSegundaSequencia = strlen(segundaSequencia);
     
@@ -65,7 +67,7 @@ void inicializacao(char primeiraSequencia[],char segundaSequencia []){
 
 }
 
-void matrizDeScore(char primeiraSequencia[],char segundaSequencia []){
+void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){
     int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
     int tamanhoSegundaSequencia = strlen(segundaSequencia);
     
