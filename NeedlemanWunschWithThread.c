@@ -33,20 +33,28 @@ int main(){
 	char primeiraSequencia[TAM_MAX]; 
     char segundaSequencia[TAM_MAX];
     
-	arq = fopen("./testCase/teste10000", "rt");
+	arq = fopen("./input1.txt", "rt");
 	if (arq == NULL) {
 		printf("Problemas na abertura do arquivo\n");
 	 	return 0;
 	}
 	
-	while (!feof(arq)){
-	  if(strlen(primeiraSequencia) == 0){
+	while (!feof(arq)){	  
   		fgets(primeiraSequencia, TAM_MAX, arq);
-  		primeiraSequencia[strcspn(primeiraSequencia, "\n")] = 0;
-	  }else{
-	  	fgets(segundaSequencia, TAM_MAX, arq);
+  		primeiraSequencia[strcspn(primeiraSequencia, "\n")] = 0;	  
+	}
+	
+	fclose(arq);
+	
+	arq = fopen("./input2.txt", "rt");
+	if (arq == NULL) {
+		printf("Problemas na abertura do arquivo\n");
+	 	return 0;
+	}
+	
+	while (!feof(arq)){	  
+  		fgets(segundaSequencia, TAM_MAX, arq);
 	  	segundaSequencia[strcspn(segundaSequencia, "\n")] = 0;
-	  }
 	}
 	
 	fclose(arq);
