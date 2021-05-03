@@ -1,16 +1,16 @@
-// Marcos Vinicius Pers RA: 94594
+// Marcos Vinicius Peres RA: 94594
 // João Vitor Malvestio da Silva RA: 93089
 #include <stdio.h>
 #include <string.h>
 #include <conio.h>
-#include <pthread.h>
+#define TAM_MAX 20000
 
 void inicializacao(char primeiraSequencia[], char segundaSequencia[]);
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia[]);
 void printMatriz(char primeiraSequencia[], char segundaSequencia[]);
 int MAIOR(int a, int b);
 
-int matriz[100][100];
+long int matriz[TAM_MAX][TAM_MAX];
 int match = 1;
 int missmatch = -1;
 int gap = -1; 
@@ -18,30 +18,28 @@ int gap = -1;
 int main(){
 	
 	FILE *arq;
-	char Linha[100];
-	char primeiraSequencia[100]; 
-    char segundaSequencia[100];
+	char primeiraSequencia[TAM_MAX]; 
+    char segundaSequencia[TAM_MAX];
     
-	arq = fopen("teste.txt", "rt");
+	arq = fopen("./testCase/teste10000", "rt");
 	if (arq == NULL) {
 		printf("Problemas na abertura do arquivo\n");
-	 	return;
+	 	return 0;
 	}
 	
 	while (!feof(arq)){
 	  if(strlen(primeiraSequencia) == 0){
-  		fgets(primeiraSequencia, 100, arq);
+  		fgets(primeiraSequencia, TAM_MAX, arq);
   		primeiraSequencia[strcspn(primeiraSequencia, "\n")] = 0;
 	  }else{
-	  	fgets(segundaSequencia, 100, arq);
+	  	fgets(segundaSequencia, TAM_MAX, arq);
 	  	segundaSequencia[strcspn(segundaSequencia, "\n")] = 0;
 	  }
 	}
 	
 	fclose(arq);
 	
-	printf("Primeira Sequencia: %s \n", primeiraSequencia);
-    
+	printf("Primeira Sequencia: %s \n", primeiraSequencia);    
     printf("Segunda Sequencia: %s \n", segundaSequencia);
     	
     inicializacao(primeiraSequencia, segundaSequencia);
@@ -52,19 +50,18 @@ int main(){
 }
 
 void inicializacao(char primeiraSequencia[], char segundaSequencia[]){
-    int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
-    int tamanhoSegundaSequencia = strlen(segundaSequencia);
+    long int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
+    long int tamanhoSegundaSequencia = strlen(segundaSequencia);
     
 	matriz[0][0] = 0;
     
-    for (int i = 0; i < tamanhoPrimeiraSequencia +  1; i++){
+    for (long int i = 0; i < tamanhoPrimeiraSequencia +  1; i++) {    	
         matriz[i][0] = i == 0 ? 0 : matriz[i-1][0] + (gap); 
     }
 
-    for (int j = 0; j < tamanhoSegundaSequencia + 1; j++){
+    for (long int j = 0; j < tamanhoSegundaSequencia + 1; j++) {    	
         matriz[0][j] = j == 0 ? 0 : matriz[0][j-1] + (gap);
     }
-
 }
 
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){

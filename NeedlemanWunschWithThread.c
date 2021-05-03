@@ -1,39 +1,50 @@
-// Marcos Vinicius Pers RA: 94594
+// Marcos Vinicius Peres RA: 94594
 // João Vitor Malvestio da Silva RA: 93089
 #include <stdio.h>
 #include <string.h>
 #include <conio.h>
 #include <pthread.h>
+#define TAM_MAX 20000
 
 void inicializacao(char primeiraSequencia[], char segundaSequencia[]);
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia[]);
 void printMatriz(char primeiraSequencia[], char segundaSequencia[]);
 int MAIOR(int a, int b);
 
-int matriz[100][100];
+struct inicializa_arg_struct {
+    int tamanhoPrimeiraSequencia;
+    int tamanhoSegundaSequencia;
+};
+
+struct calcula_score_arg_struct {
+    char primeiraSequencia[TAM_MAX];
+    char segundaSequencia[TAM_MAX];
+    int posLinha;
+    int posColuna;
+};
+
+int matriz[TAM_MAX][TAM_MAX];
 int match = 1;
 int missmatch = -1;
 int gap = -1; 
 
-int main(){
-	
+int main(){	
 	FILE *arq;
-	char Linha[100];
-	char primeiraSequencia[100]; 
-    char segundaSequencia[100];
+	char primeiraSequencia[TAM_MAX]; 
+    char segundaSequencia[TAM_MAX];
     
-	arq = fopen("teste.txt", "rt");
+	arq = fopen("./testCase/teste10000", "rt");
 	if (arq == NULL) {
 		printf("Problemas na abertura do arquivo\n");
-	 	return;
+	 	return 0;
 	}
 	
 	while (!feof(arq)){
 	  if(strlen(primeiraSequencia) == 0){
-  		fgets(primeiraSequencia, 100, arq);
+  		fgets(primeiraSequencia, TAM_MAX, arq);
   		primeiraSequencia[strcspn(primeiraSequencia, "\n")] = 0;
 	  }else{
-	  	fgets(segundaSequencia, 100, arq);
+	  	fgets(segundaSequencia, TAM_MAX, arq);
 	  	segundaSequencia[strcspn(segundaSequencia, "\n")] = 0;
 	  }
 	}
@@ -51,20 +62,40 @@ int main(){
 	return 0;
 }
 
-void inicializacao(char primeiraSequencia[], char segundaSequencia[]){
-    int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
-    int tamanhoSegundaSequencia = strlen(segundaSequencia);
-    
-	matriz[0][0] = 0;
-    
-    for (int i = 0; i < tamanhoPrimeiraSequencia +  1; i++){
+void* inicializaLinha (void *arguments) {
+	struct inicializa_arg_struct *args = arguments;
+	
+	for (int i = 0; i < args -> tamanhoPrimeiraSequencia +  1; i++){		
         matriz[i][0] = i == 0 ? 0 : matriz[i-1][0] + (gap); 
     }
 
-    for (int j = 0; j < tamanhoSegundaSequencia + 1; j++){
+	return NULL;
+}
+
+void* inicializaColuna (void *arguments) {
+	struct inicializa_arg_struct *args = arguments;
+	
+	for (int j = 0; j < args -> tamanhoSegundaSequencia + 1; j++){		
         matriz[0][j] = j == 0 ? 0 : matriz[0][j-1] + (gap);
     }
+    
+	return NULL;
+}
 
+void inicializacao (char primeiraSequencia[], char segundaSequencia[]) {
+	struct inicializa_arg_struct args;
+    pthread_t thread_linha;
+    pthread_t thread_coluna;    
+	
+	args.tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
+    args.tamanhoSegundaSequencia = strlen(segundaSequencia);        
+    
+	matriz[0][0] = 0;
+		
+	pthread_create(&thread_linha, NULL, &inicializaLinha, (void *)&args);
+	pthread_create(&thread_coluna, NULL, &inicializaColuna, (void *)&args);
+	pthread_join(thread_linha, NULL);
+	pthread_join(thread_coluna, NULL);
 }
 
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){
