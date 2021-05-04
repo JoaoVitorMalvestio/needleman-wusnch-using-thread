@@ -106,29 +106,50 @@ void inicializacao (char primeiraSequencia[], char segundaSequencia[]) {
 	pthread_join(thread_coluna, NULL);
 }
 
+void* calculaScorePos (void *arguments) {	
+	struct calcula_score_arg_struct *args = arguments;
+	
+	int posLinha = args -> posLinha;
+	char primeiraSequencia[TAM_MAX];
+	strcpy(primeiraSequencia, args -> primeiraSequencia);
+	char segundaSequencia[TAM_MAX];
+	strcpy(segundaSequencia, args -> segundaSequencia);
+	int tamanhoSegundaSequencia = strlen(segundaSequencia);
+	
+	for (int posColuna = 1; posColuna < tamanhoSegundaSequencia + 1; posColuna++){
+		int valorDiagonal = 0;
+			
+	    if (primeiraSequencia[posLinha - 1] == segundaSequencia[posColuna - 1]) {
+			valorDiagonal = matriz[posLinha - 1][posColuna - 1] + match;
+	    }else{
+			valorDiagonal = matriz[posLinha - 1][posColuna - 1] + missmatch;
+	    }
+	    
+	    int valorEsquerda = matriz[posLinha][posColuna - 1] + gap;
+	    int valorCima =  matriz[posLinha - 1][posColuna] + gap;
+	    int maximoScore = MAIOR(MAIOR(valorDiagonal, valorEsquerda), valorCima);
+	            
+	    matriz[posLinha][posColuna] = maximoScore;	        	
+    }		
+}
+
 void matrizDeScore(char primeiraSequencia[], char segundaSequencia []){
     int tamanhoPrimeiraSequencia = strlen(primeiraSequencia);
     int tamanhoSegundaSequencia = strlen(segundaSequencia);
-
+    pthread_t thread[tamanhoPrimeiraSequencia + 1];	        
     
     for (int i = 1; i < tamanhoPrimeiraSequencia + 1; i++) {
-        for (int j = 1; j < tamanhoSegundaSequencia + 1; j++){
-        
-            int valorDiagonal = 0;
-			
-            if (primeiraSequencia[i-1] == segundaSequencia[j-1]) {
-			    valorDiagonal = matriz[i - 1][j - 1] + match;
-            }else{
-			    valorDiagonal = matriz[i - 1][j - 1] + missmatch;
-            }
-    
-            int valorEsquerda = matriz[i][j - 1] + gap;
-            int valorCima =  matriz[i - 1][j] + gap;
-            int maximoScore = MAIOR(MAIOR(valorDiagonal, valorEsquerda), valorCima);
-            
-            matriz[i][j] = maximoScore;
-        }
+    	struct calcula_score_arg_struct args;
+        strcpy(args.primeiraSequencia, primeiraSequencia);
+        strcpy(args.segundaSequencia, segundaSequencia);
+        args.posLinha = i;        	       	
+        pthread_create(thread + i, NULL, calculaScorePos, (void *)&args);
+        pthread_join(thread[i], NULL);
     }
+    
+    for (int i = 1; i < tamanhoPrimeiraSequencia + 1; i++){
+        pthread_join(thread[i], NULL);
+    }	
 }
 
 int MAIOR (int a, int b) {
